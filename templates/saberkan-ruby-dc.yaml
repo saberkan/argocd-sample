@@ -1,0 +1,62 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: ruby
+    app.kubernetes.io/component: ruby
+    app.kubernetes.io/instance: ruby
+    app.kubernetes.io/name: ruby
+    app.kubernetes.io/part-of: ruby-app
+    app.openshift.io/runtime: ruby
+    app.openshift.io/runtime-version: "2.5"
+  name: ruby
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: ruby
+    deploymentconfig: ruby
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ruby
+        deploymentconfig: ruby
+    spec:
+      containers:
+      - image: well.be.replaced.by.trigger/saberkan-test/ruby@sha256:666addad8d8cd31c102c04e2561599d51d36a04e0b0abf227fc90449abc7956a
+        imagePullPolicy: Always
+        name: ruby
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - ruby
+      from:
+        kind: ImageStreamTag
+        name: ruby:latest
+        namespace: saberkan-test
+    type: ImageChange
+  - type: ConfigChange
