@@ -2,7 +2,7 @@ apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   labels:
-    test: ok
+    test: okok
     app: ruby
     app.kubernetes.io/component: ruby
     app.kubernetes.io/instance: ruby
